@@ -8,13 +8,6 @@
 import Foundation
 
 struct Fruit {
-    var name: String = ""
-    var isChecked: Bool = false
-
-    func dictionary() -> [String: Any] {
-        let KeyName = "Name"
-        let KeyCheck = "isChecked"
-
-        return [KeyName: name, KeyCheck: isChecked]
-    }
+    var name: String
+    var isChecked: Bool
 }

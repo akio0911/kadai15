@@ -9,12 +9,10 @@ import UIKit
 
 final class AddViewController: UIViewController {
     @IBOutlet weak private var addText: UITextField!
-    private(set) var fruitAdd: [String: Any] = [:]
+    private(set) var fruitAdd: Fruit?
 
     @IBAction private func saveButton(_ sender: Any) {
-        var fruits = Fruit()
-        fruits.name = addText.text!
-        fruitAdd = fruits.dictionary()
+        fruitAdd = Fruit(name: addText.text ?? "", isChecked: false)
         performSegue(withIdentifier: "exit", sender: nil)
     }
 }
