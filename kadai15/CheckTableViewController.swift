@@ -15,7 +15,11 @@ final class CheckTableViewController: UITableViewController {
         Fruit(name: "パイナップル", isChecked: false)
     ]
 
-    private var changeIndex = 0
+    private enum SegueIdentifier {
+        static let detail = "detail"
+    }
+
+    private var changeIndex: Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,9 +37,8 @@ final class CheckTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var fruit = fruits[indexPath.row]
-        fruit.isChecked.toggle()  // toggle()でBool値の反転を行う！
-        fruits[indexPath.row] = fruit
+        fruits[indexPath.row].isChecked.toggle()
+
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 
@@ -45,7 +48,7 @@ final class CheckTableViewController: UITableViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == TableViewCell.detailIdentifier {
+        if segue.identifier == SegueIdentifier.detail, let changeIndex = changeIndex {
             let nav = segue.destination as! UINavigationController
             let addVC = nav.topViewController as! AddViewController
             addVC.change = fruits[changeIndex]
@@ -56,15 +59,16 @@ final class CheckTableViewController: UITableViewController {
     }
 
     @IBAction private func exit(segue: UIStoryboardSegue) {
-        let addVC = segue.source as! AddViewController
-        guard let fruit = addVC.fruitAdd else {return}
+        guard let addVC = segue.source as? AddViewController else { return }
+        guard let fruit = addVC.fruitAdd else { return }
         fruits.append(fruit)
         tableView.reloadData()
     }
 
     @IBAction private func change(segue: UIStoryboardSegue) {
-        let addVC = segue.source as! AddViewController
-        guard let fruit = addVC.change else {return}
+        guard let addVC = segue.source as? AddViewController else { return }
+        guard let fruit = addVC.change else { return }
+        guard let changeIndex = changeIndex else { return }
         fruits[changeIndex] = fruit
         tableView.reloadData()
     }

@@ -16,7 +16,7 @@ final class TableViewCell: UITableViewCell {
     private static let imageview = UIImage(named: "check") // カプセル化する。＋　staticにする事で意図しない変更を防ぐ
 
     func configure(fruit: Fruit) { // 構造体を定義として扱っている。引数fruitをFruit型に指定して使う
-        checkImage.image = fruit.isChecked ? TableViewCell.imageview : nil
+        checkImage.image = fruit.isChecked ? Self.imageview : nil
         memoLabel.text = fruit.name
     }
 }

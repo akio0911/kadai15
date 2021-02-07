@@ -18,12 +18,12 @@ final class AddViewController: UIViewController {
     }
 
     @IBAction private func saveButton(_ sender: Any) {
-        if change != nil {
-            change?.name = addText.text ?? ""
-            performSegue(withIdentifier: "change", sender: nil)
-        } else {
+        if change == nil {
             fruitAdd = Fruit(name: addText.text ?? "", isChecked: false)  // 構造体の定義を使用して
             performSegue(withIdentifier: "exit", sender: nil)
+        } else {
+            change?.name = addText.text ?? ""
+            performSegue(withIdentifier: "change", sender: nil)
         }
     }
 }
