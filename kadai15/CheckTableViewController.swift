@@ -8,6 +8,8 @@
 import UIKit
 
 final class CheckTableViewController: UITableViewController {
+    private let userDefaultsFruitsKey = "fruits"
+
     private var fruits = [
         Fruit(name: "りんご", isChecked: true),
         Fruit(name: "ばなな", isChecked: false),
@@ -26,11 +28,18 @@ final class CheckTableViewController: UITableViewController {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: TableViewCell.reuseIdentifier)
 
-        getFruits()
+        guard let fruits = loadFruits() else {
+            fatalError("fruits is nil.")
+        }
+
+        self.fruits = fruits
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        setFruits()
+        super.viewWillDisappear(animated)
+        guard saveFruits() else {
+            fatalError("Failed to save.")
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -87,16 +96,19 @@ final class CheckTableViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    private func setFruits() {
+    private func saveFruits() -> Bool {
         let encoder = JSONEncoder()
-        guard let data = try? encoder.encode(fruits) else { return }  // [Fruit]型をData型にエンコード
+        guard let data = try? encoder.encode(fruits) else { return false }  // [Fruit]型をData型にエンコード
         UserDefaults.standard.set(data, forKey: "fruits")
+        return true
     }
 
-    private func getFruits() {
+    private func loadFruits() -> [Fruit]? {
         let decoder = JSONDecoder()
-        guard let fruitsData = UserDefaults.standard.data(forKey: "fruits"),
-              let fruit = try? decoder.decode([Fruit].self, from: fruitsData) else { return }
-        self.fruits = fruit
+        guard let fruitsData = UserDefaults.standard.data(forKey: userDefaultsFruitsKey),
+              let fruit = try? decoder.decode([Fruit].self, from: fruitsData) else {
+            return nil
+        }
+        return fruit
     }
 }
